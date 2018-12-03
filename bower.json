@@ -1,0 +1,7 @@
+{
+  "name": "rbx-wp-calendar",
+  "directory": "bower_components",
+  "dependencies": {
+    "fullcalendar": "^3.9.0"
+  }
+}
