@@ -14,26 +14,9 @@ jQuery(document).ready(function ($) {
 		minTime: '08:00:00',
 		maxTime: '19:00:00',
 		weekends: false,
-		//		eventRender: function (calEvent) {
-		////			if (calEvent.salle_de_reunion === 'salle-reunion-1') {
-		//				calEvent.editable = true;
-		////			}
-		////			else{
-		////				calEvent.editable = false;
-		////			}
-		////			console.log(calEvent);
-		////			console.log(calEvent.salle_de_reunion);
-		//		},
-		eventClick: function (calEvent, jsEvent, view) {
-
-			alert(calEvent.title);
-
-			// Formulaire sweetalert
-
-			//			alert('Event: ' + calEvent.start['_i']);
-			//			alert('Event: ' + calEvent.end['_i']);
-			console.log(calEvent);
-
+		selectable: true,
+		select: function (start, end) {
+			alert('Sweetalert');
 		},
 
 		events: themeforce.events,
