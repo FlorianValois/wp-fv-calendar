@@ -1,5 +1,5 @@
 jQuery(document).ready(function ($) {
-
+	
 	$('#calendar').fullCalendar({
 		defaultView: 'agendaWeek',
 		firstDay: 1,
@@ -15,8 +15,21 @@ jQuery(document).ready(function ($) {
 		maxTime: '19:00:00',
 		weekends: false,
 		selectable: true,
+		
 		select: function (start, end) {
-			alert('Sweetalert');
+			
+			var formAddEvent = $('#formAddEvent > form').clone()[0];
+			
+			alert(start._d);
+			console.log(end);
+			
+			
+			swal({
+				title: 'Error!',
+				html: formAddEvent,
+				confirmButtonText: 'Cool'
+			})
+			
 		},
 
 		events: themeforce.events,
@@ -36,7 +49,7 @@ jQuery(document).ready(function ($) {
 				var esalle = ev.salle_de_reunion;
 
 				if ((start > estart && start < eend && salle === esalle) || (end > estart && end < eend && salle === esalle)) {
-					alert('ok');
+					alert('Vous ne pouvez pas réserver sur la même heure.');
 					revertFunc();
 				}
 
