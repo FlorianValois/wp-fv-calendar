@@ -1,5 +1,5 @@
 jQuery(document).ready(function ($) {
-	
+
 	$('#calendar').fullCalendar({
 		defaultView: 'agendaWeek',
 		firstDay: 1,
@@ -15,21 +15,35 @@ jQuery(document).ready(function ($) {
 		maxTime: '19:00:00',
 		weekends: false,
 		selectable: true,
-		
+		timezone: 'local',
+		//		timezone : 'Europe/Paris',
+
 		select: function (start, end) {
-			
+
+			var eventStartDay = moment(start._d).format('DD/MM/YYYY HH:mm');
+			var eventEndDay = moment(end._d).format('DD/MM/YYYY HH:mm');
+
+			$('#eventStartDay').val(eventStartDay);
+			$('#eventEndDay').val(eventEndDay);
+
 			var formAddEvent = $('#formAddEvent > form').clone()[0];
-			
-			alert(start._d);
-			console.log(end);
-			
-			
+
 			swal({
-				title: 'Error!',
+				title: 'Réserver une salle',
 				html: formAddEvent,
-				confirmButtonText: 'Cool'
+				showCancelButton: true,
+				cancelButtonColor: '#f3545d',
+				cancelButtonText: 'Annuler',
+				confirmButtonColor: '#92C83C',
+				confirmButtonText: 'Réserver la salle',
+			}).then(function (result) {
+				if (result.value) {
+					alert('ok');
+				}else{
+					alert('pas ok');
+				}
 			})
-			
+
 		},
 
 		events: themeforce.events,
@@ -49,7 +63,11 @@ jQuery(document).ready(function ($) {
 				var esalle = ev.salle_de_reunion;
 
 				if ((start > estart && start < eend && salle === esalle) || (end > estart && end < eend && salle === esalle)) {
-					alert('Vous ne pouvez pas réserver sur la même heure.');
+					swal({
+						type: 'error',
+						title: 'Réservation impossible',
+						html: 'Vous ne pouvez pas réserver cette salle car une réunion est déjà programmé pendant ce créneau.'
+					})
 					revertFunc();
 				}
 

@@ -40,34 +40,22 @@ if ( !function_exists( 'rbx_wpcalendar_admin_css_js' ) ) {
   }
 }
 
-//if ( !function_exists( 'rbx_wpcalendar_init' ) ) {
-//	add_action('admin_menu','rbx_wpcalendar_init');
-//  function rbx_wpcalendar_init(){ 
-//    add_menu_page(
-//      __( 'WP Calendar', 'rbx-wp-calendar' ), 
-//      __( 'WP Calendar', 'rbx-wp-calendar' ), 
-//      'manage_options', 
-//      'rbx_wpcalendar', 
-//      'rbx_wpcalendar_dashboard', 
-//      'dashicons-vault', /* A remplacer avec le ligne ci-dessous */
-//  //    plugins_url('admin/images/favicon.png', __FILE__), 
-//      99 
-//    );
-//  }
-//}
-
 if ( !function_exists( 'rbx_wpcalendar_dashboard' ) ) {
 	add_shortcode( 'rbx_wpcalendar', 'rbx_wpcalendar_dashboard' );
 	function rbx_wpcalendar_dashboard(){
 	?>  
 	<div id='calendar'></div>
 	
-	<div id="formAddEvent">
-		<form style="display: none;">
+	<div id="formAddEvent" style="display: none;">
+		<form>
 			<input type="text" name="" placeholder="Nom de l'événement">
-			<input type="datetime" name="" placeholder="">
+			<input type="datetime-local" name="" id="eventStartDay" value="">
+			<input type="datetime-local" name="" id="eventEndDay" value="">
 		</form>
 	</div>
+	
+	<div id="yolo"></div>
+	
 	<?php
 	}
 }
