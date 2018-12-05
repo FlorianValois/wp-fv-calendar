@@ -1,5 +1,23 @@
 jQuery(document).ready(function ($) {
 
+	//					$.ajax({
+	//						type: "POST",
+	//						data: postData,
+	//						dataType: "json",
+	//						url: themeforce.ajaxurl,
+	//						success: function (postData) {
+	//							//        if (postData.update) {
+	//							swal({
+	//								position: 'center',
+	//								type: 'success',
+	//								title: 'titre',
+	//								text: 'sauvegardé',
+	//								backdrop: 'rgba(0, 0, 0, .75)',
+	//							})
+	//						}
+	//						//      }
+	//					});
+
 	$('#calendar').fullCalendar({
 		defaultView: 'agendaWeek',
 		firstDay: 1,
@@ -18,15 +36,22 @@ jQuery(document).ready(function ($) {
 		timezone: 'local',
 		//		timezone : 'Europe/Paris',
 
-		select: function (start, end) {
+		select: function (event, start, end) {
 
 			var eventStartDay = moment(start._d).format('DD/MM/YYYY HH:mm');
 			var eventEndDay = moment(end._d).format('DD/MM/YYYY HH:mm');
 
-			$('#eventStartDay').val(eventStartDay);
-			$('#eventEndDay').val(eventEndDay);
-
-			var formAddEvent = $('#formAddEvent > form').clone()[0];
+			var formAddEvent =
+				'<form id="formAddEvent">' +
+				'<input type="text" name="nom_event" id="eventName" placeholder="Nom de l\'événement" value="">' +
+				'<input type="datetime-local" name="start_event" id="eventStartDay" value="' + eventStartDay + '">' +
+				'<input type="datetime-local" name="end_event" id="eventEndDay" value="' + eventEndDay + '">' +
+				'<select name="salle_event" id="">' +
+				'<option value="">---</option>' +
+				'<option value="salle-reunion-1">Salle de réunion 1</option>' +
+				'<option value="salle-reunion-2">Salle de réunion 2</option>' +
+				'</select>' +
+				'</form>';
 
 			swal({
 				title: 'Réserver une salle',
@@ -36,11 +61,66 @@ jQuery(document).ready(function ($) {
 				cancelButtonText: 'Annuler',
 				confirmButtonColor: '#92C83C',
 				confirmButtonText: 'Réserver la salle',
+				confirmButtonClass: 'submitCreateEvent',
+				showLoaderOnConfirm: true,
+				inputValidator: (value) => {
+					return !value && 'You need to write something!'
+				},
+				preConfirm: (value) => {
+
+//					var data_field = $('#formAddEvent').serializeArray();
+//
+//					$.each(data_field, function (key, value) {
+//						if (!Object(value).value) {
+//							empty_field = false;
+//						} else {
+//							empty_field = true;
+//						}
+//					});
+//
+//					return fetch(empty_field)
+//						.then(empty_field => {
+//							console.log(empty_field);
+//							//							if (!response.ok) {
+//							//								throw new Error(response.statusText)
+//							//							}
+//						})
+
+				},
 			}).then(function (result) {
 				if (result.value) {
-					alert('ok');
-				}else{
-					alert('pas ok');
+
+					var json = $('#formAddEvent').serializeArray();
+
+					var postData = {
+						action: 'createEvent',
+						data: json
+					}
+
+					//					console.log(postData);
+
+					$.ajax({
+						type: "POST",
+						data: postData,
+						dataType: "json",
+						url: themeforce.ajaxurl,
+						success: function (postData) {
+							//        if (postData.update) {
+							//							console.log(postData);
+							//							swal({
+							//								position: 'center',
+							//								type: 'success',
+							//								title: 'titre',
+							//								text: 'sauvegardé',
+							//								backdrop: 'rgba(0, 0, 0, .75)',
+							//							})
+						}
+						//      }
+					});
+
+				} else {
+
+
 				}
 			})
 

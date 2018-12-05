@@ -34,6 +34,7 @@ if ( !function_exists( 'rbx_wpcalendar_admin_css_js' ) ) {
  
 		wp_localize_script( 'fullcalendar-js', 'themeforce', array(
 				'events' => plugins_url('json-feed.php', __FILE__),
+				'ajaxurl' => admin_url( 'admin-ajax.php' )
 				)
     );
 		
@@ -45,17 +46,40 @@ if ( !function_exists( 'rbx_wpcalendar_dashboard' ) ) {
 	function rbx_wpcalendar_dashboard(){
 	?>  
 	<div id='calendar'></div>
-	
-	<div id="formAddEvent" style="display: none;">
-		<form>
-			<input type="text" name="" placeholder="Nom de l'événement">
-			<input type="datetime-local" name="" id="eventStartDay" value="">
-			<input type="datetime-local" name="" id="eventEndDay" value="">
-		</form>
-	</div>
-	
-	<div id="yolo"></div>
-	
 	<?php
+	}
+}
+
+add_action( 'wp_ajax_' . 'createEvent', 'createEvent_function' );
+add_action( 'wp_ajax_nopriv_' . 'createEvent', 'createEvent_function' );
+if ( !function_exists( 'createEvent_function' ) ) {
+	function createEvent_function(){
+
+		global $wpdb;
+		
+		$current_user_ID = wp_get_current_user()->ID;
+				
+		// Récupération des données du form
+		$params = array();
+
+		// Mise en place des datas dans le tableau
+		parse_str($_POST['data'], $params);
+
+		// Sauvegarde des données
+		$option_name = 'wp_rbx_calendar' ;
+
+		if($_POST['data']){
+
+			// Sauvegarde des data
+			$update_options = json_encode(array(
+//					'update' => update_option( $option_name, $params )
+					'update' => 'Ok',
+					'current-user' => $current_user_ID
+			));
+
+			echo $update_options;
+		}
+				
+		die();
 	}
 }
