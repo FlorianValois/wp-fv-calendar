@@ -36,7 +36,7 @@ jQuery(document).ready(function ($) {
 		timezone: 'local',
 		//		timezone : 'Europe/Paris',
 
-		select: function (event, start, end) {
+		select: function (start, end) {
 
 			var eventStartDay = moment(start._d).format('DD/MM/YYYY HH:mm');
 			var eventEndDay = moment(end._d).format('DD/MM/YYYY HH:mm');
@@ -63,38 +63,51 @@ jQuery(document).ready(function ($) {
 				confirmButtonText: 'Réserver la salle',
 				confirmButtonClass: 'submitCreateEvent',
 				showLoaderOnConfirm: true,
-				inputValidator: (value) => {
-					return !value && 'You need to write something!'
-				},
-				preConfirm: (value) => {
-
-//					var data_field = $('#formAddEvent').serializeArray();
-//
-//					$.each(data_field, function (key, value) {
-//						if (!Object(value).value) {
-//							empty_field = false;
-//						} else {
-//							empty_field = true;
-//						}
-//					});
-//
-//					return fetch(empty_field)
-//						.then(empty_field => {
-//							console.log(empty_field);
-//							//							if (!response.ok) {
-//							//								throw new Error(response.statusText)
-//							//							}
-//						})
-
-				},
+				//				preConfirm: function (inputValue, event) {
+				//										
+				//					return new Promise(function (resolve, reject) {
+				//
+				//							var data_field = $('#formAddEvent').serializeArray();
+				//
+				//							$.each(data_field, function (key, value) {
+				//								if (!Object(value).value) {
+				//									inputValue = false;
+				//								}
+				//							});
+				//
+				//							if (inputValue === false) {
+				//								reject()
+				//							} else {
+				//								resolve()
+				//							}
+				//
+				//						})
+				//						.catch(error => {
+				//							swal.showValidationMessage(
+				//								'Remplissez tous les champs avant de valider votre réservation.'
+				//							)
+				//						})
+				//
+				//				},
 			}).then(function (result) {
+
 				if (result.value) {
+
 
 					var json = $('#formAddEvent').serializeArray();
 
+					var dataArray = [];
+
+					$.each(json, function (key, value) {
+//						console.log(value.name + ': ' + value.value);
+						dataArray[value.name] = value.value;
+					});
+
+					console.log(JSON.stringify(dataArray));
+
 					var postData = {
 						action: 'createEvent',
-						data: json
+						data: dataArray
 					}
 
 					//					console.log(postData);
@@ -104,9 +117,9 @@ jQuery(document).ready(function ($) {
 						data: postData,
 						dataType: "json",
 						url: themeforce.ajaxurl,
-						success: function (postData) {
+						success: function (response) {
 							//        if (postData.update) {
-							//							console.log(postData);
+							console.log(response.update);
 							//							swal({
 							//								position: 'center',
 							//								type: 'success',

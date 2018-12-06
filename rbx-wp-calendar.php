@@ -64,6 +64,9 @@ if ( !function_exists( 'createEvent_function' ) ) {
 
 		// Mise en place des datas dans le tableau
 		parse_str($_POST['data'], $params);
+		
+		
+	var_dump($params);
 
 		// Sauvegarde des données
 		$option_name = 'wp_rbx_calendar' ;
