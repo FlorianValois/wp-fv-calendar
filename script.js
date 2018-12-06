@@ -95,22 +95,13 @@ jQuery(document).ready(function ($) {
 
 
 					var json = $('#formAddEvent').serializeArray();
-
-					var dataArray = [];
-
-					$.each(json, function (key, value) {
-//						console.log(value.name + ': ' + value.value);
-						dataArray[value.name] = value.value;
-					});
-
-					console.log(JSON.stringify(dataArray));
-
+					
+//					console.log(json);
+					
 					var postData = {
 						action: 'createEvent',
-						data: dataArray
+						data: json
 					}
-
-					//					console.log(postData);
 
 					$.ajax({
 						type: "POST",
