@@ -38,8 +38,8 @@ jQuery(document).ready(function ($) {
 
 		select: function (start, end) {
 
-			var eventStartDay = moment(start._d).format('DD/MM/YYYY HH:mm');
-			var eventEndDay = moment(end._d).format('DD/MM/YYYY HH:mm');
+			var eventStartDay = moment(start._d).format('DD-MM-YYYY HH:mm');
+			var eventEndDay = moment(end._d).format('DD-MM-YYYY HH:mm');
 
 			var formAddEvent =
 				'<form id="formAddEvent">' +
@@ -118,6 +118,7 @@ jQuery(document).ready(function ($) {
 							//								text: 'sauvegardé',
 							//								backdrop: 'rgba(0, 0, 0, .75)',
 							//							})
+							$('#calendar').fullCalendar( 'refetchEvents' );
 						}
 						//      }
 					});

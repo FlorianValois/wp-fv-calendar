@@ -69,20 +69,23 @@ if ( !function_exists( 'createEvent_function' ) ) {
 				$params[$item['name']] = $item['value'];
 			}
 			
-			var_dump($params['start_event']);
+			$start_time = new DateTime($params['start_event']);
+			$end_time = new DateTime($params['end_event']);
+			
+//			var_dump($date->format('Y-m-d H:i:s'));
 
 			// Sauvegarde des données			
-//			$table = $wpdb->prefix.'rbx_calendar';
-//			
-//			$data = array(
-//				'rbx_calendar_author' => $current_user_ID,
-//				'rbx_calendar_name' => $params['nom_event'],
-//				'rbx_calendar_start_time' => date($params['start_event']),
-//				'rbx_calendar_end_time' => date($params['end_event']),
-//				'slug' => $params['salle_event']
-//			);
+			$table = $wpdb->prefix.'rbx_calendar';
+			
+			$data = array(
+				'rbx_calendar_author' => $current_user_ID,
+				'rbx_calendar_name' => $params['nom_event'],
+				'rbx_calendar_start_time' => $start_time->format('Y-m-d H:i:s'),
+				'rbx_calendar_end_time' => $end_time->format('Y-m-d H:i:s'),
+				'slug' => $params['salle_event']
+			);
 //						
-//			$insertData = $wpdb->insert($table, $data);
+			$insertData = $wpdb->insert($table, $data);
 													
 			// Envoi de la réponse
 			$update_options = json_encode(array(
