@@ -29,6 +29,7 @@ foreach($events as $event){
 	if($author_event === $current_user_ID){	
 		
 		$jsonevents[]= array(
+			'id' =>$event->rbx_calendar_ID,
 			'author' => $event->rbx_calendar_author,
 			'title' => $event->rbx_calendar_name,
 			'salle_de_reunion' => $event->slug,
@@ -43,6 +44,7 @@ foreach($events as $event){
 	}
 	else{
 		$jsonevents[]= array(
+			'id' =>$event->rbx_calendar_ID,
 			'author' => $event->rbx_calendar_author,
 			'title' => $event->rbx_calendar_name,
 			'salle_de_reunion' => $event->slug,

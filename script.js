@@ -33,8 +33,8 @@ jQuery(document).ready(function ($) {
 		maxTime: '19:00:00',
 		weekends: false,
 		selectable: true,
-		timezone: 'local',
-		//		timezone : 'Europe/Paris',
+		//		timezone: 'local',
+		timezone: 'Europe/Paris',
 
 		select: function (start, end) {
 
@@ -65,7 +65,7 @@ jQuery(document).ready(function ($) {
 				confirmButtonClass: 'submitCreateEvent',
 				showLoaderOnConfirm: true,
 				preConfirm: function (inputValue, event) {
-					
+
 					console.log(event);
 
 					return new Promise(function (resolve, reject) {
@@ -146,6 +146,11 @@ jQuery(document).ready(function ($) {
 			var start = new Date(event.start);
 			var end = new Date(event.end);
 			var salle = event.salle_de_reunion;
+			var idevent = event.id;
+
+//			console.log(start);
+//			console.log(event);
+//			console.log(end);
 
 			var overlap = $('#calendar').fullCalendar('clientEvents', function (ev) {
 				if (ev == event)
@@ -154,15 +159,53 @@ jQuery(document).ready(function ($) {
 				var estart = new Date(ev.start);
 				var eend = new Date(ev.end);
 				var esalle = ev.salle_de_reunion;
+				var eIDevent = ev.id;
+								
+//				var resultStart = start - estart;
+				var resultEnd = end - eend;
 
-				if ((start > estart && start < eend && salle === esalle) || (end > estart && end < eend && salle === esalle)) {
-					swal({
-						type: 'error',
-						title: 'Réservation impossible',
-						html: 'Vous ne pouvez pas réserver cette salle car une réunion est déjà programmé pendant ce créneau.'
-					})
-					revertFunc();
+//				console.log(result);
+				
+				if(idevent != eIDevent && salle === esalle){
+					if(
+						(start >= estart && start < eend) ||
+						(end > estart && end < eend) ||
+						(start > estart && end < eend) ||
+						(start < estart && end > eend) ||
+						(resultEnd === 0)
+						){
+						console.log('inside')
+						revertFunc();
+						
+					}else{
+						console.log('outside');
+					}
+//					swal({
+//						type: 'error',
+//						title: 'Réservation impossible',
+//						html: 'Vous ne pouvez pas réserver cette salle car une réunion est déjà programmé pendant ce créneau.'
+//					})
 				}
+
+				//				if (
+				//					(start > estart && start < eend) ||
+				//					(end > estart && end < eend) ||
+				//					(start < estart && end > eend)
+				//				) {
+//				if (
+//					(start > estart && end < eend && salle === esalle)
+//				) {
+					//					if (salle === esalle) {
+
+//					swal({
+//						type: 'error',
+//						title: 'Réservation impossible',
+//						html: 'Vous ne pouvez pas réserver cette salle car une réunion est déjà programmé pendant ce créneau.'
+//					})
+//					revertFunc();
+
+					//					}
+				
 
 			});
 

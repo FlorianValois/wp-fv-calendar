@@ -82,14 +82,15 @@ if ( !function_exists( 'createEvent_function' ) ) {
 				$events_end = $key->rbx_calendar_end_time;
 				$event_salle = $key->slug;
 				
-				if(($start_time->format('Y-m-d H:i:s') >= $events_start && 
-					 $start_time->format('Y-m-d H:i:s') < $events_end && 
-					 $salle === $event_salle) ||
-					($end_time->format('Y-m-d H:i:s') > $events_start && 
-					 $end_time->format('Y-m-d H:i:s') <= $events_end && 
-					 $salle === $event_salle)){
-					/* Réservation impossible */
-					$autorisation = false;
+				if(
+					($start_time->format('Y-m-d H:i:s') >= $events_start && $start_time->format('Y-m-d H:i:s') < $events_end) ||
+					($end_time->format('Y-m-d H:i:s') > $events_start && $end_time->format('Y-m-d H:i:s') <= $events_end) ||
+					($start_time->format('Y-m-d H:i:s') < $events_start && $end_time->format('Y-m-d H:i:s') > $events_end)
+					){
+					if($salle === $event_salle){
+						/* Réservation impossible */
+						$autorisation = false;
+					}
 				}
 			}
 			
