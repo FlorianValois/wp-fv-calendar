@@ -50,6 +50,7 @@ jQuery(document).ready(function ($) {
 				'<option value="">---</option>' +
 				'<option value="salle-reunion-1">Salle de réunion 1</option>' +
 				'<option value="salle-reunion-2">Salle de réunion 2</option>' +
+				'<option value="salle-reunion-3">Salle de réunion 3</option>' +
 				'</select>' +
 				'</form>';
 
@@ -63,41 +64,40 @@ jQuery(document).ready(function ($) {
 				confirmButtonText: 'Réserver la salle',
 				confirmButtonClass: 'submitCreateEvent',
 				showLoaderOnConfirm: true,
-				//				preConfirm: function (inputValue, event) {
-				//										
-				//					return new Promise(function (resolve, reject) {
-				//
-				//							var data_field = $('#formAddEvent').serializeArray();
-				//
-				//							$.each(data_field, function (key, value) {
-				//								if (!Object(value).value) {
-				//									inputValue = false;
-				//								}
-				//							});
-				//
-				//							if (inputValue === false) {
-				//								reject()
-				//							} else {
-				//								resolve()
-				//							}
-				//
-				//						})
-				//						.catch(error => {
-				//							swal.showValidationMessage(
-				//								'Remplissez tous les champs avant de valider votre réservation.'
-				//							)
-				//						})
-				//
-				//				},
+				preConfirm: function (inputValue, event) {
+					
+					console.log(event);
+
+					return new Promise(function (resolve, reject) {
+
+							var data_field = $('#formAddEvent').serializeArray();
+
+							$.each(data_field, function (key, value) {
+								if (!Object(value).value) {
+									inputValue = false;
+								}
+							});
+
+							if (inputValue === false) {
+								reject()
+							} else {
+								resolve()
+							}
+
+						})
+						.catch(error => {
+							swal.showValidationMessage(
+								'Remplissez tous les champs avant de valider votre réservation.'
+							)
+						})
+
+				},
 			}).then(function (result) {
 
 				if (result.value) {
 
-
 					var json = $('#formAddEvent').serializeArray();
-					
-//					console.log(json);
-					
+
 					var postData = {
 						action: 'createEvent',
 						data: json
@@ -108,19 +108,27 @@ jQuery(document).ready(function ($) {
 						data: postData,
 						dataType: "json",
 						url: themeforce.ajaxurl,
-						success: function (response) {
-							//        if (postData.update) {
-							console.log(response.update);
-							//							swal({
-							//								position: 'center',
-							//								type: 'success',
-							//								title: 'titre',
-							//								text: 'sauvegardé',
-							//								backdrop: 'rgba(0, 0, 0, .75)',
-							//							})
-							$('#calendar').fullCalendar( 'refetchEvents' );
+						success: function (postData) {
+							if (postData.update === 1) {
+								swal({
+									position: 'center',
+									type: 'success',
+									title: 'titre',
+									text: 'sauvegardé',
+									backdrop: 'rgba(0, 0, 0, .75)',
+								})
+								$('#calendar').fullCalendar('refetchEvents');
+							}
+							if (postData.update === 0) {
+								swal({
+									position: 'center',
+									type: 'error',
+									title: 'titre',
+									text: 'VTFFB !',
+									backdrop: 'rgba(0, 0, 0, .75)',
+								})
+							}
 						}
-						//      }
 					});
 
 				} else {

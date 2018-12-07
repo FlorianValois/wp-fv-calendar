@@ -54,12 +54,12 @@ add_action( 'wp_ajax_' . 'createEvent', 'createEvent_function' );
 add_action( 'wp_ajax_nopriv_' . 'createEvent', 'createEvent_function' );
 if ( !function_exists( 'createEvent_function' ) ) {
 	function createEvent_function(){
-
-		global $wpdb;
-		
-		$current_user_ID = wp_get_current_user()->ID;
-				
+	
 		if($_POST['data']){
+			
+			global $wpdb;
+
+			$current_user_ID = wp_get_current_user()->ID;
 			
 			// Récupération des données du form
 			$params = array();
@@ -69,31 +69,61 @@ if ( !function_exists( 'createEvent_function' ) ) {
 				$params[$item['name']] = $item['value'];
 			}
 			
+			// Conversion des formats de dates
 			$start_time = new DateTime($params['start_event']);
 			$end_time = new DateTime($params['end_event']);
+			$salle = $params['salle_event'];
 			
-//			var_dump($date->format('Y-m-d H:i:s'));
-
-			// Sauvegarde des données			
-			$table = $wpdb->prefix.'rbx_calendar';
+			$results = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}rbx_calendar", OBJECT);
+			$string = array();
 			
-			$data = array(
-				'rbx_calendar_author' => $current_user_ID,
-				'rbx_calendar_name' => $params['nom_event'],
-				'rbx_calendar_start_time' => $start_time->format('Y-m-d H:i:s'),
-				'rbx_calendar_end_time' => $end_time->format('Y-m-d H:i:s'),
-				'slug' => $params['salle_event']
-			);
-//						
-			$insertData = $wpdb->insert($table, $data);
-													
-			// Envoi de la réponse
-			$update_options = json_encode(array(
-//					'update' => update_option( $option_name, $params )
-					'update' => $insertData
-			));
+			foreach($results as $key){
+				$events_start = $key->rbx_calendar_start_time;
+				$events_end = $key->rbx_calendar_end_time;
+				$event_salle = $key->slug;
+				
+				if(($start_time->format('Y-m-d H:i:s') >= $events_start && 
+					 $start_time->format('Y-m-d H:i:s') < $events_end && 
+					 $salle === $event_salle) ||
+					($end_time->format('Y-m-d H:i:s') > $events_start && 
+					 $end_time->format('Y-m-d H:i:s') <= $events_end && 
+					 $salle === $event_salle)){
+					/* Réservation impossible */
+					$autorisation = false;
+				}
+			}
+			
+			if($autorisation === null){
+				
+				// Sauvegarde des données			
+				$table = $wpdb->prefix.'rbx_calendar';
 
-			echo $update_options;
+				$data = array(
+					'rbx_calendar_author' => $current_user_ID,
+					'rbx_calendar_name' => $params['nom_event'],
+					'rbx_calendar_start_time' => $start_time->format('Y-m-d H:i:s'),
+					'rbx_calendar_end_time' => $end_time->format('Y-m-d H:i:s'),
+					'slug' => $params['salle_event']
+				);
+
+				$insertData = $wpdb->insert($table, $data);
+
+				// Envoi de la réponse (ok si sauvegarde réussi)
+				$update_options = json_encode(array(
+						'update' => $insertData
+				));
+
+				echo $update_options;
+				
+			} else{
+				// Envoi de la réponse (refus)
+				$update_options = json_encode(array(
+						'update' => 0
+				));
+
+				echo $update_options;
+			}
+			
 		}
 				
 		die();
