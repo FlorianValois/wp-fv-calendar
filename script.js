@@ -148,10 +148,6 @@ jQuery(document).ready(function ($) {
 			var salle = event.salle_de_reunion;
 			var idevent = event.id;
 
-//			console.log(start);
-//			console.log(event);
-//			console.log(end);
-
 			var overlap = $('#calendar').fullCalendar('clientEvents', function (ev) {
 				if (ev == event)
 					return false;
@@ -160,52 +156,27 @@ jQuery(document).ready(function ($) {
 				var eend = new Date(ev.end);
 				var esalle = ev.salle_de_reunion;
 				var eIDevent = ev.id;
-								
-//				var resultStart = start - estart;
+
 				var resultEnd = end - eend;
 
-//				console.log(result);
-				
-				if(idevent != eIDevent && salle === esalle){
-					if(
+				if (idevent != eIDevent && salle === esalle) {
+					if (
 						(start >= estart && start < eend) ||
 						(end > estart && end < eend) ||
 						(start > estart && end < eend) ||
 						(start < estart && end > eend) ||
 						(resultEnd === 0)
-						){
-						console.log('inside')
+					) {
+						console.log('inside');
+						swal({
+							type: 'error',
+							title: 'Réservation impossible',
+							html: 'Vous ne pouvez pas réserver cette salle car une réunion est déjà programmé pendant ce créneau.'
+						})
 						revertFunc();
-						
-					}else{
-						console.log('outside');
 					}
-//					swal({
-//						type: 'error',
-//						title: 'Réservation impossible',
-//						html: 'Vous ne pouvez pas réserver cette salle car une réunion est déjà programmé pendant ce créneau.'
-//					})
+					
 				}
-
-				//				if (
-				//					(start > estart && start < eend) ||
-				//					(end > estart && end < eend) ||
-				//					(start < estart && end > eend)
-				//				) {
-//				if (
-//					(start > estart && end < eend && salle === esalle)
-//				) {
-					//					if (salle === esalle) {
-
-//					swal({
-//						type: 'error',
-//						title: 'Réservation impossible',
-//						html: 'Vous ne pouvez pas réserver cette salle car une réunion est déjà programmé pendant ce créneau.'
-//					})
-//					revertFunc();
-
-					//					}
-				
 
 			});
 
