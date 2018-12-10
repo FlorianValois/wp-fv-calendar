@@ -23,6 +23,7 @@ if ( !function_exists( 'rbx_wpcalendar_admin_css_js' ) ) {
 		wp_enqueue_script('moment-js', plugins_url('bower_components/moment/min/moment.min.js', __FILE__), false, '', true);
 		wp_enqueue_script('fullcalendar-js', plugins_url('bower_components/fullcalendar/dist/fullcalendar.min.js', __FILE__), false, '', true);
 		wp_enqueue_script('fullcalendar-locale-js', plugins_url('bower_components/fullcalendar/dist/locale/fr.js', __FILE__), false, '', true);
+//		wp_enqueue_script('gcal-js', plugins_url('bower_components/fullcalendar/dist/gcal.js', __FILE__), false, '', true);
     wp_enqueue_style('fullcalendar-css', plugins_url('bower_components/fullcalendar/dist/fullcalendar.min.css', __FILE__));
 		
 		/* SWEETALERT 2 */
@@ -100,11 +101,12 @@ if ( !function_exists( 'createEvent_function' ) ) {
 				$table = $wpdb->prefix.'rbx_calendar';
 
 				$data = array(
-					'rbx_calendar_author' => $current_user_ID,
-					'rbx_calendar_name' => $params['nom_event'],
-					'rbx_calendar_start_time' => $start_time->format('Y-m-d H:i:s'),
-					'rbx_calendar_end_time' => $end_time->format('Y-m-d H:i:s'),
-					'slug' => $params['salle_event']
+					'author' => $current_user_ID,
+					'name' => $params['nom_event'],
+					'start_time' => $start_time->format('Y-m-d H:i:s'),
+					'end_time' => $end_time->format('Y-m-d H:i:s'),
+					'slug' => $params['salle_event'],
+					'description' => $params['description_event']
 				);
 
 				$insertData = $wpdb->insert($table, $data);

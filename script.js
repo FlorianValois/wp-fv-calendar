@@ -1,23 +1,5 @@
 jQuery(document).ready(function ($) {
 
-	//					$.ajax({
-	//						type: "POST",
-	//						data: postData,
-	//						dataType: "json",
-	//						url: themeforce.ajaxurl,
-	//						success: function (postData) {
-	//							//        if (postData.update) {
-	//							swal({
-	//								position: 'center',
-	//								type: 'success',
-	//								title: 'titre',
-	//								text: 'sauvegardé',
-	//								backdrop: 'rgba(0, 0, 0, .75)',
-	//							})
-	//						}
-	//						//      }
-	//					});
-
 	$('#calendar').fullCalendar({
 		defaultView: 'agendaWeek',
 		firstDay: 1,
@@ -33,25 +15,30 @@ jQuery(document).ready(function ($) {
 		maxTime: '19:00:00',
 		weekends: false,
 		selectable: true,
-		//		timezone: 'local',
-		timezone: 'Europe/Paris',
+		timezone: 'local',
+		//		timezone: 'Europe/Paris',
 
 		select: function (start, end) {
 
+
 			var eventStartDay = moment(start._d).format('DD-MM-YYYY HH:mm');
 			var eventEndDay = moment(end._d).format('DD-MM-YYYY HH:mm');
+
+			console.log(start);
+			console.log(moment(start._d).format('DD-MM-YYYY HH:mm'));
 
 			var formAddEvent =
 				'<form id="formAddEvent">' +
 				'<input type="text" name="nom_event" id="eventName" placeholder="Nom de l\'événement" value="">' +
 				'<input type="datetime-local" name="start_event" id="eventStartDay" value="' + eventStartDay + '">' +
 				'<input type="datetime-local" name="end_event" id="eventEndDay" value="' + eventEndDay + '">' +
-				'<select name="salle_event" id="">' +
+				'<select name="salle_event" id="eventSalle">' +
 				'<option value="">---</option>' +
 				'<option value="salle-reunion-1">Salle de réunion 1</option>' +
 				'<option value="salle-reunion-2">Salle de réunion 2</option>' +
 				'<option value="salle-reunion-3">Salle de réunion 3</option>' +
 				'</select>' +
+				'<textarea name="description_event" id="eventDescription"></textarea>'
 				'</form>';
 
 			swal({
@@ -64,9 +51,9 @@ jQuery(document).ready(function ($) {
 				confirmButtonText: 'Réserver la salle',
 				confirmButtonClass: 'submitCreateEvent',
 				showLoaderOnConfirm: true,
-				preConfirm: function (inputValue, event) {
-
-					console.log(event);
+				reverseButtons: true,
+				backdrop: 'rgba(0, 0, 0, .75)',
+				preConfirm: function (inputValue) {
 
 					return new Promise(function (resolve, reject) {
 
@@ -139,6 +126,9 @@ jQuery(document).ready(function ($) {
 
 		},
 
+		//		googleCalendarApiKey: 'AIzaSyCe3G_0JlEZfooJlWl_2vrJ2pA4aSXKxnk',
+		//		events: '49n2v9i5701vim3b5f9krakqpc@group.calendar.google.com',
+
 		events: themeforce.events,
 
 		eventDrop: function checkOverlap(event, delta, revertFunc) {
@@ -175,11 +165,15 @@ jQuery(document).ready(function ($) {
 						})
 						revertFunc();
 					}
-					
+
 				}
 
 			});
 
+		},
+
+		eventClick: function (event) {
+			console.log(event);
 		}
 
 	});
