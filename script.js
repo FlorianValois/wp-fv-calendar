@@ -165,8 +165,47 @@ jQuery(document).ready(function ($) {
 					}
 
 				}
-				else{
-					alert('ok');
+
+			});
+			
+		},
+		
+		eventResize: function checkOverlap(event, delta, revertFunc) {
+
+			var start = new Date(event.start);
+			var end = new Date(event.end);
+			var salle = event.salle_de_reunion_slug;
+			var idevent = event.id;
+			
+			var autorisation = null;
+
+			var overlap = $('#calendar').fullCalendar('clientEvents', function (ev) {
+				if (ev == event)
+					return false;
+				
+				var estart = new Date(ev.start);
+				var eend = new Date(ev.end);
+				var esalle = ev.salle_de_reunion_slug;
+				var eIDevent = ev.id;
+
+				var resultEnd = end - eend;
+
+				if (idevent != eIDevent && salle === esalle) {
+					if (
+						(start >= estart && start < eend) ||
+						(end > estart && end < eend) ||
+						(start > estart && end < eend) ||
+						(start < estart && end > eend) ||
+						(resultEnd === 0)
+					) {
+						swal({
+							type: 'error',
+							title: 'Réservation impossible',
+							html: 'Vous ne pouvez pas réserver cette salle car une réunion est déjà programmé pendant ce créneau.'
+						})
+						revertFunc();
+					}
+
 				}
 
 			});
