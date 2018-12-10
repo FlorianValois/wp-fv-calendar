@@ -126,25 +126,24 @@ jQuery(document).ready(function ($) {
 
 		},
 
-		//		googleCalendarApiKey: 'AIzaSyCe3G_0JlEZfooJlWl_2vrJ2pA4aSXKxnk',
-		//		events: '49n2v9i5701vim3b5f9krakqpc@group.calendar.google.com',
-
 		events: themeforce.events,
 
 		eventDrop: function checkOverlap(event, delta, revertFunc) {
 
 			var start = new Date(event.start);
 			var end = new Date(event.end);
-			var salle = event.salle_de_reunion;
+			var salle = event.salle_de_reunion_slug;
 			var idevent = event.id;
+			
+			var autorisation = null;
 
 			var overlap = $('#calendar').fullCalendar('clientEvents', function (ev) {
 				if (ev == event)
 					return false;
-
+				
 				var estart = new Date(ev.start);
 				var eend = new Date(ev.end);
-				var esalle = ev.salle_de_reunion;
+				var esalle = ev.salle_de_reunion_slug;
 				var eIDevent = ev.id;
 
 				var resultEnd = end - eend;
@@ -157,7 +156,6 @@ jQuery(document).ready(function ($) {
 						(start < estart && end > eend) ||
 						(resultEnd === 0)
 					) {
-						console.log('inside');
 						swal({
 							type: 'error',
 							title: 'Réservation impossible',
@@ -167,9 +165,12 @@ jQuery(document).ready(function ($) {
 					}
 
 				}
+				else{
+					alert('ok');
+				}
 
 			});
-
+			
 		},
 
 		eventClick: function (event) {

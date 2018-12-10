@@ -4,7 +4,7 @@
 //	exit;
 //}
 
-//header('Content-Type:application/json');
+header('Content-Type:application/json');
  
 // - grab wp load, wherever it's hiding -
 if(file_exists('../../../wp-load.php')) :
@@ -22,9 +22,7 @@ $jsonevents = array();
 foreach($events as $event){
 	
 	$slug = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}rbx_calendar_category WHERE slug = '$event->slug'", OBJECT );
-	
-	var_dump($slug);
-	
+		
 	$author_event = intval($event->author);
 	$current_user_ID = wp_get_current_user()->ID;
 	
@@ -34,7 +32,8 @@ foreach($events as $event){
 			'id' =>$event->id,
 			'author' => $event->author,
 			'title' => $event->name,
-			'salle_de_reunion' => $event->slug,
+			'salle_de_reunion_name' => $slug[0]->name,
+			'salle_de_reunion_slug' => $event->slug,
 			'start' => $event->start_time,
 			'end' => $event->end_time,
 			'description' => $event->description,
@@ -50,7 +49,8 @@ foreach($events as $event){
 			'id' =>$event->id,
 			'author' => $event->author,
 			'title' => $event->name,
-			'salle_de_reunion' => $event->slug,
+			'salle_de_reunion_name' => $slug[0]->name,
+			'salle_de_reunion_slug' => $event->slug,
 			'start' => $event->start_time,
 			'end' => $event->end_time,
 			'description' => $event->description,
