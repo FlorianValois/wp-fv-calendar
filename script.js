@@ -39,7 +39,7 @@ jQuery(document).ready(function ($) {
 				'<option value="salle-reunion-3">Salle de réunion 3</option>' +
 				'</select>' +
 				'<textarea name="description_event" id="eventDescription"></textarea>'
-				'</form>';
+			'</form>';
 
 			swal({
 				title: 'Réserver une salle',
@@ -134,27 +134,30 @@ jQuery(document).ready(function ($) {
 			var end = new Date(event.end);
 			var salle = event.salle_de_reunion_slug;
 			var idevent = event.id;
-			
-			var autorisation = null;
+
 
 			var overlap = $('#calendar').fullCalendar('clientEvents', function (ev) {
 				if (ev == event)
 					return false;
-				
+
 				var estart = new Date(ev.start);
 				var eend = new Date(ev.end);
 				var esalle = ev.salle_de_reunion_slug;
 				var eIDevent = ev.id;
 
 				var resultEnd = end - eend;
+				
+				console.log(idevent + ': ' + eIDevent);
 
-				if (idevent != eIDevent && salle === esalle) {
+//				if (idevent != eIDevent && salle === esalle) {
+				if (idevent != eIDevent) {
 					if (
 						(start >= estart && start < eend) ||
 						(end > estart && end < eend) ||
 						(start > estart && end < eend) ||
 						(start < estart && end > eend) ||
-						(resultEnd === 0)
+						(resultEnd === 0) &&
+						(salle === esalle)
 					) {
 						swal({
 							type: 'error',
@@ -162,27 +165,36 @@ jQuery(document).ready(function ($) {
 							html: 'Vous ne pouvez pas réserver cette salle car une réunion est déjà programmé pendant ce créneau.'
 						})
 						revertFunc();
+					} else {
+						swal({
+							type: 'success',
+							title: 'Réservation accepté',
+							html: 'blablabla'
+						})
+						/* Fonction de sauvegarde */
 					}
 
 				}
 
 			});
-			
+
+			//			console.log(event);
+
 		},
-		
+
 		eventResize: function checkOverlap(event, delta, revertFunc) {
 
 			var start = new Date(event.start);
 			var end = new Date(event.end);
 			var salle = event.salle_de_reunion_slug;
 			var idevent = event.id;
-			
+
 			var autorisation = null;
 
 			var overlap = $('#calendar').fullCalendar('clientEvents', function (ev) {
 				if (ev == event)
 					return false;
-				
+
 				var estart = new Date(ev.start);
 				var eend = new Date(ev.end);
 				var esalle = ev.salle_de_reunion_slug;
@@ -209,7 +221,7 @@ jQuery(document).ready(function ($) {
 				}
 
 			});
-			
+
 		},
 
 		eventClick: function (event) {
