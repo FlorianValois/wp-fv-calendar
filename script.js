@@ -13,8 +13,10 @@ jQuery(document).ready(function ($) {
 		},
 		minTime: '08:00:00',
 		maxTime: '19:00:00',
+		slotDuration: '00:15:00',
 		weekends: false,
 		selectable: true,
+		themeSystem: 'bootstrap4',
 		timezone: 'local',
 		//		timezone: 'Europe/Paris',
 
@@ -29,17 +31,17 @@ jQuery(document).ready(function ($) {
 
 			var formAddEvent =
 				'<form id="formAddEvent">' +
-				'<input type="text" name="nom_event" id="eventName" placeholder="Nom de l\'événement" value="">' +
-				'<input type="datetime-local" name="start_event" id="eventStartDay" value="' + eventStartDay + '">' +
-				'<input type="datetime-local" name="end_event" id="eventEndDay" value="' + eventEndDay + '">' +
-				'<select name="salle_event" id="eventSalle">' +
-				'<option value="">---</option>' +
-				'<option value="salle-reunion-1">Salle de réunion 1</option>' +
-				'<option value="salle-reunion-2">Salle de réunion 2</option>' +
-				'<option value="salle-reunion-3">Salle de réunion 3</option>' +
-				'</select>' +
-				'<textarea name="description_event" id="eventDescription"></textarea>'
-			'</form>';
+					'<input type="text" name="nom_event" id="eventName" placeholder="Nom de l\'événement" value="">' +
+					'<input type="datetime-local" name="start_event" id="eventStartDay" value="' + eventStartDay + '">' +
+					'<input type="datetime-local" name="end_event" id="eventEndDay" value="' + eventEndDay + '">' +
+					'<select name="salle_event" id="eventSalle">' +
+					'<option value="">---</option>' +
+					'<option value="salle-reunion-1">Salle de réunion 1</option>' +
+					'<option value="salle-reunion-2">Salle de réunion 2</option>' +
+					'<option value="salle-reunion-3">Salle de réunion 3</option>' +
+					'</select>' +
+					'<textarea name="description_event" id="eventDescription"></textarea>'
+				'</form>';
 
 			swal({
 				title: 'Réserver une salle',
@@ -135,7 +137,6 @@ jQuery(document).ready(function ($) {
 			var salle = event.salle_de_reunion_slug;
 			var idevent = event.id;
 
-
 			var overlap = $('#calendar').fullCalendar('clientEvents', function (ev) {
 				if (ev == event)
 					return false;
@@ -146,18 +147,16 @@ jQuery(document).ready(function ($) {
 				var eIDevent = ev.id;
 
 				var resultEnd = end - eend;
-				
+
 				console.log(idevent + ': ' + eIDevent);
 
-//				if (idevent != eIDevent && salle === esalle) {
-				if (idevent != eIDevent) {
+				if (idevent != eIDevent && salle === esalle) {
 					if (
 						(start >= estart && start < eend) ||
 						(end > estart && end < eend) ||
 						(start > estart && end < eend) ||
 						(start < estart && end > eend) ||
-						(resultEnd === 0) &&
-						(salle === esalle)
+						(resultEnd === 0)
 					) {
 						swal({
 							type: 'error',
@@ -172,13 +171,12 @@ jQuery(document).ready(function ($) {
 							html: 'blablabla'
 						})
 						/* Fonction de sauvegarde */
+						/* Mettre des événements bidons en "2000" */
 					}
 
 				}
 
 			});
-
-			//			console.log(event);
 
 		},
 
@@ -190,6 +188,8 @@ jQuery(document).ready(function ($) {
 			var idevent = event.id;
 
 			var autorisation = null;
+			
+			console.log(event);
 
 			var overlap = $('#calendar').fullCalendar('clientEvents', function (ev) {
 				if (ev == event)
@@ -224,9 +224,9 @@ jQuery(document).ready(function ($) {
 
 		},
 
-		eventClick: function (event) {
-			console.log(event);
-		}
+		//		eventClick: function (event) {
+		//			console.log(event);
+		//		}
 
 	});
 

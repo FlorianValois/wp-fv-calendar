@@ -37,9 +37,9 @@ foreach($events as $event){
 			'start' => $event->start_time,
 			'end' => $event->end_time,
 			'description' => $event->description,
-			'backgroundColor' => $slug[0]->backgroundColor,
-			'borderColor' => $slug[0]->borderColor,
-			'textColor' => $slug[0]->textColor,
+			'backgroundColor' => $slug[0]->background_color,
+			'borderColor' => $slug[0]->border_color,
+			'textColor' => $slug[0]->text_color,
 			'editable' => true
 		);
 		
@@ -54,9 +54,9 @@ foreach($events as $event){
 			'start' => $event->start_time,
 			'end' => $event->end_time,
 			'description' => $event->description,
-			'backgroundColor' => $slug[0]->backgroundColor,
-			'borderColor' => $slug[0]->borderColor,
-			'textColor' => $slug[0]->textColor,
+			'backgroundColor' => $slug[0]->background_color,
+			'borderColor' => $slug[0]->border_color,
+			'textColor' => $slug[0]->text_color,
 			'editable' => false
 		);
 	}

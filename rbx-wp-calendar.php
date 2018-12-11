@@ -15,6 +15,86 @@ if (!defined('ABSPATH')) {
 	exit;
 }
 
+if ( !function_exists( 'rbx_wpcalendar_create_table' ) ) {
+	register_activation_hook( __FILE__, 'rbx_wpcalendar_create_table' );
+  function rbx_wpcalendar_create_table() {
+		
+		
+//		$table_name = $wpdb->prefix . "liveshoutbox";
+//
+//
+//$sql = "CREATE TABLE $table_name (
+//  id mediumint(9) NOT NULL AUTO_INCREMENT,
+//  time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+//  name tinytext NOT NULL,
+//  text text NOT NULL,
+//  url varchar(55) DEFAULT '' NOT NULL,
+//  PRIMARY KEY  (id)
+//) $charset_collate;";
+
+		
+		
+		global $wpdb;
+				
+		$charset_collate = $wpdb->get_charset_collate();
+		
+		require_once( ABSPATH . '/wp-admin/includes/upgrade.php' );
+		
+		$rbx_calendar = $wpdb->prefix.'rbx_calendar';
+		
+		$sql = "CREATE TABLE IF NOT EXISTS $rbx_calendar (
+			id bigint(20) NOT NULL AUTO_INCREMENT,
+			author bigint(20) NOT NULL,
+			name text NOT NULL,
+			slug varchar(200) NOT NULL,
+			start_time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+			end_time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+			description text NOT NULL,
+			PRIMARY KEY  (id)
+		) $charset_collate;";
+
+		dbDelta( $sql );
+		
+		$wpdb->query("
+		INSERT INTO $rbx_calendar 
+		(id, author, name, slug, start_time, end_time, description) 
+		VALUES 
+		('1', '1', 'Réunion Salle 1er étage', 'salle-reunion-1', '2000-01-01 08:00:00', '2000-01-01 08:30:00', 'data test'),
+		('2', '1', 'Réunion Salle 2nd étage', 'salle-reunion-2', '2000-01-01 08:30:00', '2000-01-01 09:00:00', 'data test'),
+		('3', '1', 'Réunion Salle 3ème étage', 'salle-reunion-3', '2000-01-01 09:00:00', '2000-01-01 09:30:00', 'data test'),
+		('4', '1', 'Réunion Salle 4ème étage', 'salle-reunion-4', '2000-01-01 09:30:00', '2000-01-01 010:00:00', 'data test'),
+		('5', '1', 'Réunion Salle 5ème étage', 'salle-reunion-5', '2000-01-01 10:00:00', '2000-01-01 010:30:00', 'data test'),
+		('6', '1', 'Réunion Salle 6ème étage', 'salle-reunion-6', '2000-01-01 10:30:00', '2000-01-01 011:00:00', 'data test'),
+		('7', '1', 'Réunion Salle 7ème étage', 'salle-reunion-7', '2000-01-01 11:00:00', '2000-01-01 011:30:00', 'data test'),
+		('8', '1', 'Réunion Salle 8ème étage', 'salle-reunion-8', '2000-01-01 11:30:00', '2000-01-01 12:00:00', 'data test')
+		");
+				
+		$rbx_calendar_category = $wpdb->prefix.'rbx_calendar_category';
+		
+		$sql = "CREATE TABLE IF NOT EXISTS $rbx_calendar_category (
+			id bigint(20) NOT NULL AUTO_INCREMENT,
+			name text NOT NULL,
+			slug varchar(200) NOT NULL,
+			background_color text NOT NULL,
+			border_color text NOT NULL,
+			text_color text NOT NULL,
+			PRIMARY KEY  (id)
+		) $charset_collate;";
+
+		dbDelta( $sql );
+			
+		$wpdb->query("
+		INSERT INTO $rbx_calendar_category 
+		(id, name, slug, background_color, border_color, text_color) 
+		VALUES 
+		('1', 'Salle de réunion 1', 'salle-reunion-1', '#ff9831', '#cc6b2e', '#723a1c'),
+		('2', 'Salle de réunion 2', 'salle-reunion-2', '#4fa756', '#37773c', '#1b4b1f'),
+		('3', 'Salle de réunion 3', 'salle-reunion-3', '#DE4E4E', '#9E1D1D', '#9E1D1D')
+		");
+		
+  }
+}
+
 if ( !function_exists( 'rbx_wpcalendar_admin_css_js' ) ) {
 	add_action( 'init', 'rbx_wpcalendar_admin_css_js' );
   function rbx_wpcalendar_admin_css_js() {
@@ -23,7 +103,6 @@ if ( !function_exists( 'rbx_wpcalendar_admin_css_js' ) ) {
 		wp_enqueue_script('moment-js', plugins_url('bower_components/moment/min/moment.min.js', __FILE__), false, '', true);
 		wp_enqueue_script('fullcalendar-js', plugins_url('bower_components/fullcalendar/dist/fullcalendar.min.js', __FILE__), false, '', true);
 		wp_enqueue_script('fullcalendar-locale-js', plugins_url('bower_components/fullcalendar/dist/locale/fr.js', __FILE__), false, '', true);
-//		wp_enqueue_script('gcal-js', plugins_url('bower_components/fullcalendar/dist/gcal.js', __FILE__), false, '', true);
     wp_enqueue_style('fullcalendar-css', plugins_url('bower_components/fullcalendar/dist/fullcalendar.min.css', __FILE__));
 		
 		/* SWEETALERT 2 */
@@ -32,7 +111,6 @@ if ( !function_exists( 'rbx_wpcalendar_admin_css_js' ) ) {
 		
 		/* PLUGIN */
 		wp_enqueue_script('script-rbx-wp-calendar', plugins_url('script.js', __FILE__), false, '', true);
- 
 		wp_localize_script( 'fullcalendar-js', 'themeforce', array(
 				'events' => plugins_url('json-feed.php', __FILE__),
 				'ajaxurl' => admin_url( 'admin-ajax.php' )
@@ -45,9 +123,9 @@ if ( !function_exists( 'rbx_wpcalendar_admin_css_js' ) ) {
 if ( !function_exists( 'rbx_wpcalendar_dashboard' ) ) {
 	add_shortcode( 'rbx_wpcalendar', 'rbx_wpcalendar_dashboard' );
 	function rbx_wpcalendar_dashboard(){
-	?>  
-	<div id='calendar'></div>
-	<?php
+	?>
+<div id='calendar'></div>
+<?php
 	}
 }
 
