@@ -18,22 +18,7 @@ if (!defined('ABSPATH')) {
 if ( !function_exists( 'rbx_wpcalendar_create_table' ) ) {
 	register_activation_hook( __FILE__, 'rbx_wpcalendar_create_table' );
   function rbx_wpcalendar_create_table() {
-		
-		
-//		$table_name = $wpdb->prefix . "liveshoutbox";
-//
-//
-//$sql = "CREATE TABLE $table_name (
-//  id mediumint(9) NOT NULL AUTO_INCREMENT,
-//  time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
-//  name tinytext NOT NULL,
-//  text text NOT NULL,
-//  url varchar(55) DEFAULT '' NOT NULL,
-//  PRIMARY KEY  (id)
-//) $charset_collate;";
 
-		
-		
 		global $wpdb;
 				
 		$charset_collate = $wpdb->get_charset_collate();
@@ -190,23 +175,88 @@ if ( !function_exists( 'createEvent_function' ) ) {
 				$insertData = $wpdb->insert($table, $data);
 
 				// Envoi de la réponse (ok si sauvegarde réussi)
-				$update_options = json_encode(array(
-						'update' => $insertData
+				$create_options = json_encode(array(
+						'create' => $insertData
 				));
 
-				echo $update_options;
+				echo $create_options;
 				
 			} else{
 				// Envoi de la réponse (refus)
-				$update_options = json_encode(array(
-						'update' => 0
+				$create_options = json_encode(array(
+						'create' => 0
 				));
 
-				echo $update_options;
+				echo $create_options;
 			}
 			
 		}
 				
+		die();
+	}
+}
+
+add_action( 'wp_ajax_' . 'updateEvent', 'updateEvent_function' );
+add_action( 'wp_ajax_nopriv_' . 'updateEvent', 'updateEvent_function' );
+if ( !function_exists( 'updateEvent_function' ) ) {
+	function updateEvent_function(){
+						
+		if($_POST['data']){
+			
+			global $wpdb;
+			
+			// Récupération des données du form
+			$params = array();
+
+			// Mise en place des datas dans le tableau
+			foreach($_POST['data'] as $key => $value){
+//				var_dump($key);
+				$params[$key] = $value;
+			}
+			
+			
+//			$start_time = $params['start_time'];
+//			$end_time = new DateTime($params['end_time']);
+			
+//			var_dump($_POST['data']);
+			
+			
+			// Sauvegarde des données			
+			$table = $wpdb->prefix.'rbx_calendar';
+
+			$data = array(
+//				'author' => $params['author'],
+//				'name' => $params['name'],
+				'start_time' => $params['start_time'],
+				'end_time' => $params['end_time']
+//				'slug' => $params['slug'],
+//				'description' => $params['description']
+			);
+			
+			$tid = array(
+				'id' => $params['id']
+			);
+			
+			$updateData = $wpdb->update(
+				$table, 
+				$data, 
+				$tid,
+				array( 
+					'%s',	
+					'%s'	
+				), 
+				array( '%d' ) 
+			);
+			
+			$update_options = json_encode(array(
+//					'update' => 1,
+					'update' => $updateData
+			));
+
+			echo $update_options;
+			
+		}
+	
 		die();
 	}
 }

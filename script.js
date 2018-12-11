@@ -16,7 +16,6 @@ jQuery(document).ready(function ($) {
 		slotDuration: '00:15:00',
 		weekends: false,
 		selectable: true,
-		themeSystem: 'bootstrap4',
 		timezone: 'local',
 		//		timezone: 'Europe/Paris',
 
@@ -30,18 +29,18 @@ jQuery(document).ready(function ($) {
 			console.log(moment(start._d).format('DD-MM-YYYY HH:mm'));
 
 			var formAddEvent =
-				'<form id="formAddEvent">' +
-					'<input type="text" name="nom_event" id="eventName" placeholder="Nom de l\'événement" value="">' +
-					'<input type="datetime-local" name="start_event" id="eventStartDay" value="' + eventStartDay + '">' +
-					'<input type="datetime-local" name="end_event" id="eventEndDay" value="' + eventEndDay + '">' +
-					'<select name="salle_event" id="eventSalle">' +
-					'<option value="">---</option>' +
-					'<option value="salle-reunion-1">Salle de réunion 1</option>' +
-					'<option value="salle-reunion-2">Salle de réunion 2</option>' +
-					'<option value="salle-reunion-3">Salle de réunion 3</option>' +
-					'</select>' +
-					'<textarea name="description_event" id="eventDescription"></textarea>'
-				'</form>';
+			'<form id="formAddEvent">' +
+				'<input type="text" name="nom_event" id="eventName" placeholder="Nom de l\'événement" value="">' +
+				'<input type="datetime-local" name="start_event" id="eventStartDay" value="' + eventStartDay + '">' +
+				'<input type="datetime-local" name="end_event" id="eventEndDay" value="' + eventEndDay + '">' +
+				'<select name="salle_event" id="eventSalle">' +
+				'<option value="">---</option>' +
+				'<option value="salle-reunion-1">Salle de réunion 1</option>' +
+				'<option value="salle-reunion-2">Salle de réunion 2</option>' +
+				'<option value="salle-reunion-3">Salle de réunion 3</option>' +
+				'</select>' +
+				'<textarea name="description_event" id="eventDescription"></textarea>'
+			'</form>';
 
 			swal({
 				title: 'Réserver une salle',
@@ -98,7 +97,7 @@ jQuery(document).ready(function ($) {
 						dataType: "json",
 						url: themeforce.ajaxurl,
 						success: function (postData) {
-							if (postData.update === 1) {
+							if (postData.create === 1) {
 								swal({
 									position: 'center',
 									type: 'success',
@@ -108,7 +107,7 @@ jQuery(document).ready(function ($) {
 								})
 								$('#calendar').fullCalendar('refetchEvents');
 							}
-							if (postData.update === 0) {
+							if (postData.create === 0) {
 								swal({
 									position: 'center',
 									type: 'error',
@@ -148,8 +147,6 @@ jQuery(document).ready(function ($) {
 
 				var resultEnd = end - eend;
 
-				console.log(idevent + ': ' + eIDevent);
-
 				if (idevent != eIDevent && salle === esalle) {
 					if (
 						(start >= estart && start < eend) ||
@@ -165,11 +162,55 @@ jQuery(document).ready(function ($) {
 						})
 						revertFunc();
 					} else {
-						swal({
-							type: 'success',
-							title: 'Réservation accepté',
-							html: 'blablabla'
-						})
+												
+						var updateData = {
+							action: 'updateEvent',
+							data: {
+								id: event.id,
+								author: event.author,
+								name: event.title, 
+								slug: event.salle_de_reunion_slug,
+								start_time: moment(start).format("YYYY-MM-DD HH:mm:ss"),
+								end_time: moment(end).format("YYYY-MM-DD HH:mm:ss"),
+								description: event.description
+							}
+						}
+						
+//						console.log(updateData.data);
+												
+						$.ajax({
+							type: "POST",
+							data: updateData,
+							dataType: "json",
+							url: themeforce.ajaxurl,
+							success: function (updateData) {
+								if (updateData.update === 1) {
+									swal({
+										type: 'success',
+										toast: true,
+										position: 'center-center',
+										title: 'Sauvegardé !',
+										showConfirmButton: false,
+										timer: 3000
+									})
+//									$('#calendar').fullCalendar('refetchEvents');
+								}
+//								if (postData.update === 0) {
+//									swal({
+//										position: 'center',
+//										type: 'error',
+//										title: 'titre',
+//										text: 'VTFFB !',
+//										backdrop: 'rgba(0, 0, 0, .75)',
+//									})
+//								}
+							}
+						});
+
+
+
+
+
 						/* Fonction de sauvegarde */
 						/* Mettre des événements bidons en "2000" */
 					}
@@ -188,7 +229,7 @@ jQuery(document).ready(function ($) {
 			var idevent = event.id;
 
 			var autorisation = null;
-			
+
 			console.log(event);
 
 			var overlap = $('#calendar').fullCalendar('clientEvents', function (ev) {
