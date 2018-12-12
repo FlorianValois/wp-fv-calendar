@@ -196,10 +196,10 @@ if ( !function_exists( 'createEvent_function' ) ) {
 	}
 }
 
-add_action( 'wp_ajax_' . 'updateEvent', 'updateEvent_function' );
-add_action( 'wp_ajax_nopriv_' . 'updateEvent', 'updateEvent_function' );
-if ( !function_exists( 'updateEvent_function' ) ) {
-	function updateEvent_function(){
+add_action( 'wp_ajax_' . 'dropEvent', 'dropEvent_function' );
+add_action( 'wp_ajax_nopriv_' . 'dropEvent', 'dropEvent_function' );
+if ( !function_exists( 'dropEvent_function' ) ) {
+	function dropEvent_function(){
 						
 		if($_POST['data']){
 			

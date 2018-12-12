@@ -163,8 +163,8 @@ jQuery(document).ready(function ($) {
 						revertFunc();
 					} else {
 												
-						var updateData = {
-							action: 'updateEvent',
+						var dropData = {
+							action: 'dropEvent',
 							data: {
 								id: event.id,
 								author: event.author,
@@ -178,11 +178,11 @@ jQuery(document).ready(function ($) {
 																		
 						$.ajax({
 							type: "POST",
-							data: updateData,
+							data: dropData,
 							dataType: "json",
 							url: themeforce.ajaxurl,
-							success: function (updateData) {
-								if (updateData.update === 1) {
+							success: function (dropData) {
+								if (dropData.update === 1) {
 									swal({
 										type: 'success',
 										toast: true,
