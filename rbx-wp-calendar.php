@@ -210,27 +210,15 @@ if ( !function_exists( 'updateEvent_function' ) ) {
 
 			// Mise en place des datas dans le tableau
 			foreach($_POST['data'] as $key => $value){
-//				var_dump($key);
 				$params[$key] = $value;
 			}
-			
-			
-//			$start_time = $params['start_time'];
-//			$end_time = new DateTime($params['end_time']);
-			
-//			var_dump($_POST['data']);
-			
 			
 			// Sauvegarde des données			
 			$table = $wpdb->prefix.'rbx_calendar';
 
 			$data = array(
-//				'author' => $params['author'],
-//				'name' => $params['name'],
 				'start_time' => $params['start_time'],
 				'end_time' => $params['end_time']
-//				'slug' => $params['slug'],
-//				'description' => $params['description']
 			);
 			
 			$tid = array(
@@ -249,7 +237,6 @@ if ( !function_exists( 'updateEvent_function' ) ) {
 			);
 			
 			$update_options = json_encode(array(
-//					'update' => 1,
 					'update' => $updateData
 			));
 

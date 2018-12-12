@@ -175,9 +175,7 @@ jQuery(document).ready(function ($) {
 								description: event.description
 							}
 						}
-						
-//						console.log(updateData.data);
-												
+																		
 						$.ajax({
 							type: "POST",
 							data: updateData,
@@ -188,31 +186,15 @@ jQuery(document).ready(function ($) {
 									swal({
 										type: 'success',
 										toast: true,
-										position: 'center-center',
+										position: 'center',
 										title: 'Sauvegardé !',
 										showConfirmButton: false,
 										timer: 3000
 									})
-//									$('#calendar').fullCalendar('refetchEvents');
 								}
-//								if (postData.update === 0) {
-//									swal({
-//										position: 'center',
-//										type: 'error',
-//										title: 'titre',
-//										text: 'VTFFB !',
-//										backdrop: 'rgba(0, 0, 0, .75)',
-//									})
-//								}
 							}
 						});
-
-
-
-
-
-						/* Fonction de sauvegarde */
-						/* Mettre des événements bidons en "2000" */
+						
 					}
 
 				}
