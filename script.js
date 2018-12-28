@@ -247,9 +247,121 @@ jQuery(document).ready(function ($) {
 
 		},
 
-		//		eventClick: function (event) {
-		//			console.log(event);
-		//		}
+			eventClick: function (event) {
+//				console.log(moment(event.start).format("YYYY-MM-DD HH:mm:ss"));
+				console.log(event);
+				
+				var formUpdateEvent =
+				'<form id="formUpdateEvent">' +
+					'<input type="text" name="nom_event" id="eventName" placeholder="Nom de l\'événement" value="' + event.title + '">' +
+					'<input type="datetime-local" name="start_event" id="eventStartDay" value="' + moment(event.start).format("YYYY-MM-DD HH:mm:ss") + '">' +
+					'<input type="datetime-local" name="end_event" id="eventEndDay" value="' + moment(event.end).format("YYYY-MM-DD HH:mm:ss") + '">' +
+					'<select name="salle_event" id="eventSalle2">' +
+						'<option value="">---</option>' +
+						'<option value="salle-reunion-1">Salle de réunion 1</option>' +
+						'<option value="salle-reunion-2">Salle de réunion 2</option>' +
+						'<option value="salle-reunion-3">Salle de réunion 3</option>' +
+					'</select>' +
+					'<textarea name="description_event" id="eventDescription">' + event.description + '</textarea>'
+					'input type="hidden" name="id_event" id="eventId" value="' + event.id + '">'
+				'</form>';
+				
+//				$('#eventSalle').find('option').value(event.salle_de_reunion_slug);
+				
+//				$('#eventSalle').each(function () {
+					
+					$('#eventSalle2').on('click', function(){
+						$(this).addClass('yolo');
+					});
+//					if($('#eventSalle option').value() === event.salle_de_reunion_slug){
+//						$(this).attr('selected="selected"');
+//					}
+//				});
+
+				swal({
+					title: 'Modifier une réservation',
+					html: formUpdateEvent,
+					showCancelButton: true,
+					cancelButtonColor: '#f3545d',
+					cancelButtonText: 'Annuler',
+					confirmButtonColor: '#92C83C',
+					confirmButtonText: 'Réserver la salle',
+					confirmButtonClass: 'submitCreateEvent',
+					showLoaderOnConfirm: true,
+					reverseButtons: true,
+					backdrop: 'rgba(0, 0, 0, .75)',
+					preConfirm: function (inputValue) {
+
+						return new Promise(function (resolve, reject) {
+
+								var data_field = $('#formAddEvent').serializeArray();
+
+								$.each(data_field, function (key, value) {
+									if (!Object(value).value) {
+										inputValue = false;
+									}
+								});
+
+								if (inputValue === false) {
+									reject()
+								} else {
+									resolve()
+								}
+
+							})
+							.catch(error => {
+								swal.showValidationMessage(
+									'Remplissez tous les champs avant de valider votre réservation.'
+								)
+							})
+
+					},
+				}).then(function (result) {
+
+					if (result.value) {
+
+						var json = $('#formAddEvent').serializeArray();
+
+						var postData = {
+							action: 'createEvent',
+							data: json
+						}
+
+						$.ajax({
+							type: "POST",
+							data: postData,
+							dataType: "json",
+							url: themeforce.ajaxurl,
+							success: function (postData) {
+								if (postData.create === 1) {
+									swal({
+										position: 'center',
+										type: 'success',
+										title: 'titre',
+										text: 'sauvegardé',
+										backdrop: 'rgba(0, 0, 0, .75)',
+									})
+									$('#calendar').fullCalendar('refetchEvents');
+								}
+								if (postData.create === 0) {
+									swal({
+										position: 'center',
+										type: 'error',
+										title: 'titre',
+										text: 'VTFFB !',
+										backdrop: 'rgba(0, 0, 0, .75)',
+									})
+								}
+							}
+						});
+
+					} else {
+
+
+					}
+				});
+			
+			}
 
 	});
 
